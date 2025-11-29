@@ -7,11 +7,11 @@
 #include "timer.h"
 #include "main.h"
 
-uint32_t timeStamp1ms;
+uint32_t Timer::s_timeStamp1ms = 0;
 
 uint32_t Timer::GetTimeStamp(void)
 {
-	return timeStamp1ms;
+	return s_timeStamp1ms;
 }
 
 void Timer::DisableTimeCtrl()
@@ -43,6 +43,6 @@ void Timer::ResetTimeCtrl()
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim)
 {
     if (htim->Instance == TIM2) {
-    	timeStamp1ms++;
+    	Timer::s_timeStamp1ms++;
     }
 }
