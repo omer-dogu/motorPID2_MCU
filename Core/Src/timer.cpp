@@ -9,35 +9,35 @@
 
 uint32_t timeStamp1ms;
 
-uint32_t getTimeStamp(void)
+uint32_t Timer::GetTimeStamp(void)
 {
 	return timeStamp1ms;
 }
 
-void disableTimeCtrl(timeCtrl_t* timeCtrl)
+void Timer::DisableTimeCtrl()
 {
-	timeCtrl->enable = 0;
+	m_enable = false;
 }
 
-void setTimeCtrl(timeCtrl_t* timeCtrl, uint32_t interval)
+void Timer::SetTimeCtrl(uint32_t interval)
 {
-	timeCtrl->enable = 1;
-	timeCtrl->interval = interval;
-	timeCtrl->start = getTimeStamp();
+	m_enable = true;
+	m_interval = interval;
+	m_start = GetTimeStamp();
 }
 
-int checkTimeCtrl(timeCtrl_t* timeCtrl)
+bool Timer::CheckTimeCtrl()
 {
-	if (timeCtrl->enable)
-		return getTimeStamp() >= (timeCtrl->start + timeCtrl->interval);
+	if (m_enable)
+		return GetTimeStamp() >= (m_start + m_interval);
 
-	return 0;
+	return false;
 }
 
-void resetTimeCtrl(timeCtrl_t* timeCtrl)
+void Timer::ResetTimeCtrl()
 {
-	if (timeCtrl->enable)
-		timeCtrl->start += timeCtrl->interval;
+	if (m_enable)
+		m_start += m_interval;
 }
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim)

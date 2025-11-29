@@ -73,12 +73,12 @@ void SendRpm()
     serialUart.startTx();
 }
 
-timeCtrl_t task50ms;
+Timer task50ms;
 
 void Task50Ms()
 {
-	if(checkTimeCtrl(&task50ms)) {
-		resetTimeCtrl(&task50ms);
+	if(task50ms.CheckTimeCtrl()) {
+		task50ms.ResetTimeCtrl();
 		SendRpm();
 	}
 }
@@ -89,7 +89,7 @@ void myMain()
 	g_handler.AddFuncList(1, CmdRpm);
 	serialUart.startRx();
 
-	setTimeCtrl(&task50ms, 50);
+	task50ms.SetTimeCtrl(50);
 	HAL_TIM_Base_Start_IT(&htim2);
 
 	while (1)

@@ -1,25 +1,18 @@
-/*
- * timer.h
- *
- *  Created on: Nov 18, 2025
- *      Author: omer
- */
+#pragma once
 
-#ifndef INC_TIMER_H_
-#define INC_TIMER_H_
+#include <cstdint>
 
-#include <stdint.h>
+class Timer {
+public:
+	uint32_t GetTimeStamp(void);
+	void DisableTimeCtrl();
+	void SetTimeCtrl(uint32_t interval);
+	bool CheckTimeCtrl();
+	void ResetTimeCtrl();
+private:
+	uint32_t m_start;
+	uint32_t m_interval;
+	bool m_enable;
+};
 
-typedef struct {
-	uint32_t start;
-	uint32_t interval;
-	uint32_t enable;
-}timeCtrl_t;
 
-uint32_t getTimeStamp(void);
-void disableTimeCtrl(timeCtrl_t* timeCtrl);
-void setTimeCtrl(timeCtrl_t* timeCtrl, uint32_t interval);
-int checkTimeCtrl(timeCtrl_t* timeCtrl);
-void resetTimeCtrl(timeCtrl_t* timeCtrl);
-
-#endif /* INC_TIMER_H_ */
