@@ -27,10 +27,14 @@ private:
 	uint16_t m_currentRpm{};
 	uint8_t m_targetDuty{};
 	uint8_t m_currentDuty{};
-	float m_Kp{};
-	float m_Ki{};
+	float m_Kp{0.1};
+	float m_Ki{1.3};
 	float m_integral{};
 	bool m_enable{false};
 	bool m_dir{false};
 	const double m_cpr{810.0};
+	static const int RPM_FILTER_N = 8;
+	float m_rpmBuffer[RPM_FILTER_N];
+	int m_rpmIndex = 0;
+	bool m_rpmFilled = false;
 };
