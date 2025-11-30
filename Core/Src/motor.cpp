@@ -2,6 +2,13 @@
 #include "main.h"
 #include <cmath>
 
+void Motor::SetDuty(uint8_t duty)
+{
+	if (duty > 100) duty = 100;
+	m_duty = duty;
+    __HAL_TIM_SET_COMPARE(&htim22, TIM_CHANNEL_1, (duty * 799) / 100);
+}
+
 void Motor::MotorEnable()
 {
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_SET);

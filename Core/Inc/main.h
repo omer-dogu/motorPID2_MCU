@@ -39,6 +39,7 @@ extern "C" {
 extern UART_HandleTypeDef huart2;
 extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim21;
+extern TIM_HandleTypeDef htim22;
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
@@ -50,6 +51,8 @@ extern TIM_HandleTypeDef htim21;
 /* USER CODE BEGIN EM */
 
 /* USER CODE END EM */
+
+void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);

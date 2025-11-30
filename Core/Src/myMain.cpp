@@ -202,6 +202,9 @@ void myMain()
 
 	HAL_TIM_Base_Start_IT(&htim2);
 	HAL_TIM_Encoder_Start(&htim21, TIM_CHANNEL_ALL);
+	HAL_TIM_PWM_Start(&htim22, TIM_CHANNEL_1);
+
+	g_motor.SetDuty(0);
 
 	while (1)
 	{
