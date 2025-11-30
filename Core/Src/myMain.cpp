@@ -79,6 +79,23 @@ void CmdI(const uint8_t* data)
 	}
 }
 
+void CmdMotor(const uint8_t* data)
+{
+	if (data[0] == 0) {
+		if (data[1] == 0){
+			if (data[2] == 0)
+				g_motor.MotorDisable();
+			else if (data[2] == 1)
+				g_motor.MotorEnable();
+		} else if (data[1] == 1){
+			if (data[2] == 0)
+				g_motor.MotorCW();
+			else if (data[2] == 1)
+				g_motor.MotorCCW();
+		}
+	}
+}
+
 void SendRpm()
 {
     uint8_t txData[8] = { 0x55, 0x04, 0x01, 0x01 };
@@ -125,6 +142,26 @@ void SendI()
     serialUart.writeTxFifoMulti(txData, 7);
 }
 
+void SendMotor()
+{
+    uint8_t txData[8] = { 0x55, 0x04, 0x05, 0x01 };
+    txData[4] = 0;
+    txData[5] = g_motor.GetMotorStatus();
+    uint16_t crc = crc16_modbus(&txData[2], txData[1]);
+    txData[6] = crc >> 8;
+    txData[7] = crc & 0xFF;
+    serialUart.writeTxFifoMulti(txData, 8);
+
+    txData[4] = 1;
+    txData[5] = g_motor.GetMotorDir();
+    crc = crc16_modbus(&txData[2], txData[1]);
+    txData[6] = crc >> 8;
+    txData[7] = crc & 0xFF;
+    serialUart.writeTxFifoMulti(txData, 8);
+}
+
+
+
 Timer task50ms;
 
 void Task50Ms()
@@ -134,6 +171,7 @@ void Task50Ms()
 		SendDuty();
 		SendP();
 		SendI();
+		SendMotor();
 	    serialUart.startTx();
 
 		task50ms.ResetTimeCtrl();
@@ -147,6 +185,7 @@ void myMain()
 	g_handler.AddFuncList(2, CmdDuty);
 	g_handler.AddFuncList(3, CmdP);
 	g_handler.AddFuncList(4, CmdI);
+	g_handler.AddFuncList(5, CmdMotor);
 
 	serialUart.startRx();
 

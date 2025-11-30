@@ -1,1 +1,34 @@
 #include "motor.h"
+#include "main.h"
+
+void Motor::MotorEnable()
+{
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_SET);
+	m_enable = true;
+}
+void Motor::MotorDisable()
+{
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_RESET);
+	m_enable = false;
+}
+void Motor::MotorCW()
+{
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);
+	m_dir = false;
+}
+void Motor::MotorCCW()
+{
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);
+	m_dir = true;
+}
+bool Motor::GetMotorStatus()
+{
+	return m_enable;
+}
+bool Motor::GetMotorDir()
+{
+	return m_dir;
+}
+
