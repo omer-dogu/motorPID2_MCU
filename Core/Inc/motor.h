@@ -8,7 +8,13 @@ public:
 	void SetRpm(uint16_t rpm) { m_rpm = rpm; }
 	uint8_t GetDuty()const { return m_duty; }
 	void SetDuty(uint8_t duty) { m_duty = duty; }
+	uint8_t GetP()const { return m_p; }
+	void SetP(uint8_t p) { m_p = p; }
+	uint8_t GetI()const { return m_i; }
+	void SetI(uint8_t i) { m_i = i; }
 private:
 	uint16_t m_rpm{};
 	uint8_t m_duty{};
+	uint8_t m_p{};
+	uint8_t m_i{};
 };
