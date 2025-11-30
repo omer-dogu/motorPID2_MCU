@@ -5,7 +5,7 @@
 class Motor {
 public:
 	uint16_t GetRpm()const { return m_rpm; }
-	void SetRpm(uint16_t rpm) { m_rpm = rpm; }
+	void SetRpm(uint16_t rpm);
 	uint8_t GetDuty()const { return m_duty; }
 	void SetDuty(uint8_t duty);
 	uint8_t GetP()const { return m_p; }

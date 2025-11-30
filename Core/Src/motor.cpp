@@ -2,6 +2,12 @@
 #include "main.h"
 #include <cmath>
 
+void Motor::SetRpm(uint16_t rpm)
+{
+	m_rpm = rpm;
+	SetDuty(rpm / 10);
+}
+
 void Motor::SetDuty(uint8_t duty)
 {
 	if (duty > 100) duty = 100;
