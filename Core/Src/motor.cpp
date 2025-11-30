@@ -4,14 +4,18 @@
 
 void Motor::SetRpm(uint16_t rpm)
 {
-	m_rpm = rpm;
-	SetDuty(rpm / 10);
+	m_targetRpm = rpm;
+	m_targetDuty = rpm / 10;
 }
 
 void Motor::SetDuty(uint8_t duty)
 {
-	if (duty > 100) duty = 100;
-	m_duty = duty;
+	m_targetDuty = duty;
+	m_targetRpm = duty * 10;
+}
+
+void Motor::ApplyPwm(uint8_t duty)
+{
     __HAL_TIM_SET_COMPARE(&htim22, TIM_CHANNEL_1, (duty * 799) / 100);
 }
 
@@ -51,6 +55,36 @@ void Motor::CalculateRpm(uint16_t resolver)
     int16_t diff = (int16_t)(resolver - lastCount);
     lastCount = resolver;
 
-    m_rpm = (float)std::abs(diff) * 6000.0f / m_cpr;
+    m_currentRpm = (float)std::abs(diff) * 6000.0f / m_cpr;
+}
+
+void Motor::ControlPI(void)
+{
+	float error = m_targetRpm - m_currentRpm;
+	uint8_t pwm_output;
+
+	if (m_targetRpm <= 1.0f)
+	{
+		m_integral = 0.0f;
+		ApplyPwm(0);
+		return;
+	}
+
+	// --- Integral ---
+	m_integral += error * 0.01f;  // 10 ms => dt = 0.01 s
+
+	// Anti-windup
+	if (m_integral > 100.0f)  m_integral = 100.0f;
+	if (m_integral < -100.0f) m_integral = -100.0f;
+
+	// --- PI Output ---
+	pwm_output = m_Kp * error + m_Ki * m_integral;
+
+	// Sınırla
+	if (pwm_output < 0.0f)   pwm_output = 0.0f;
+	if (pwm_output > 100.0f) pwm_output = 100.0f;
+
+	// PWM uygula
+	ApplyPwm(pwm_output);
 }
 

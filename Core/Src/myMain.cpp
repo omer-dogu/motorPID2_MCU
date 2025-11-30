@@ -71,14 +71,14 @@ void CmdDuty(const uint8_t* data)
 void CmdP(const uint8_t* data)
 {
 	if (data[0] == 0) {
-	    g_motor.SetP(data[1]);
+	    g_motor.SetP(data[1] / 10.0);
 	}
 }
 
 void CmdI(const uint8_t* data)
 {
 	if (data[0] == 0) {
-	    g_motor.SetI(data[1]);
+	    g_motor.SetI(data[1] / 10.0);
 	}
 }
 
@@ -126,7 +126,7 @@ void SendDuty()
 void SendP()
 {
     uint8_t txData[7] = { 0x55, 0x03, 0x03, 0x01 };
-    txData[4] = g_motor.GetP();
+    txData[4] = g_motor.GetP() * 10;
     uint16_t crc = crc16_modbus(&txData[2], txData[1]);
     txData[5] = crc >> 8;
     txData[6] = crc & 0xFF;
@@ -137,7 +137,7 @@ void SendP()
 void SendI()
 {
     uint8_t txData[7] = { 0x55, 0x03, 0x04, 0x01 };
-    txData[4] = g_motor.GetI();
+    txData[4] = g_motor.GetI() * 10;
     uint16_t crc = crc16_modbus(&txData[2], txData[1]);
     txData[5] = crc >> 8;
     txData[6] = crc & 0xFF;
@@ -180,8 +180,9 @@ void Task50Ms()
 void Task10Ms()
 {
 	if(task10ms.CheckTimeCtrl()) {
-		// calculate rpm
 		g_motor.CalculateRpm(__HAL_TIM_GET_COUNTER(&htim21));
+		g_motor.ControlPI();
+
 		task10ms.ResetTimeCtrl();
 	}
 }
