@@ -10,7 +10,7 @@ class Parser
 public:
     Parser(Frame* f) : m_f(f) { reset(); }
 
-    bool parse(uint8_t byte)
+    bool parse(uint8_t& byte)
     {
         switch (state)
         {
