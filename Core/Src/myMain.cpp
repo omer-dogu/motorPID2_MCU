@@ -14,6 +14,9 @@ Frame g_frame;
 Parser parser(&g_frame);
 Motor g_motor;
 
+Timer task50ms;
+Timer task10ms;
+
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
     serialUart.writeRxFifo();
@@ -160,10 +163,6 @@ void SendMotor()
     serialUart.writeTxFifoMulti(txData, 8);
 }
 
-
-
-Timer task50ms;
-
 void Task50Ms()
 {
 	if(task50ms.CheckTimeCtrl()) {
@@ -175,6 +174,15 @@ void Task50Ms()
 	    serialUart.startTx();
 
 		task50ms.ResetTimeCtrl();
+	}
+}
+
+void Task10Ms()
+{
+	if(task10ms.CheckTimeCtrl()) {
+		// calculate rpm
+		g_motor.CalculateRpm(__HAL_TIM_GET_COUNTER(&htim21));
+		task10ms.ResetTimeCtrl();
 	}
 }
 
@@ -190,11 +198,15 @@ void myMain()
 	serialUart.startRx();
 
 	task50ms.SetTimeCtrl(50);
+	task10ms.SetTimeCtrl(10);
+
 	HAL_TIM_Base_Start_IT(&htim2);
+	HAL_TIM_Encoder_Start(&htim21, TIM_CHANNEL_ALL);
 
 	while (1)
 	{
 		processRx();
 		Task50Ms();
+		Task10Ms();
 	}
 }

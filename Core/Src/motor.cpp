@@ -1,5 +1,6 @@
 #include "motor.h"
 #include "main.h"
+#include <cmath>
 
 void Motor::MotorEnable()
 {
@@ -30,5 +31,13 @@ bool Motor::GetMotorStatus()
 bool Motor::GetMotorDir()
 {
 	return m_dir;
+}
+void Motor::CalculateRpm(uint16_t resolver)
+{
+	static uint16_t lastCount = 0;
+    int16_t diff = (int16_t)(resolver - lastCount);
+    lastCount = resolver;
+
+    m_rpm = (float)std::abs(diff) * 6000.0f / m_cpr;
 }
 

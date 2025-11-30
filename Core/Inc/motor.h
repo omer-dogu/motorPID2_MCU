@@ -12,6 +12,7 @@ public:
 	void SetP(uint8_t p) { m_p = p; }
 	uint8_t GetI()const { return m_i; }
 	void SetI(uint8_t i) { m_i = i; }
+	void CalculateRpm(uint16_t resolver);
 
 	void MotorEnable();
 	void MotorDisable();
@@ -26,4 +27,5 @@ private:
 	uint8_t m_i{};
 	bool m_enable{false};
 	bool m_dir{false};
+	const double m_cpr{810.0};
 };
